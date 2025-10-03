@@ -1,59 +1,57 @@
-# AngularDragAndDrop
+# Simple CSV and Parquet Viewer
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.3.4.
+![Screenshot](img/screenshot.png)
 
-## Development server
+This is a simple, client-side web application built with Angular that allows users to view CSV and Parquet files directly in their browser. It features a drag-and-drop interface for easy file loading and provides tools for data exploration like sorting, filtering, and pagination.
 
-To start a local development server, run:
+## Features
 
-```bash
-ng serve
-```
+- **Drag and Drop:** Easily load files by dragging them onto the application window.
+- **File Support:** Supports both `.csv` and `.parquet` file formats.
+- **Interactive Table:** Displays data in a clean, easy-to-read table.
+- **Sorting:** Click on any column header to sort the data in ascending or descending order.
+- **Filtering:** Each column has its own filter input.
+  - **Text search:** Simple text matching for string-based columns.
+  - **Numeric queries:** Use operators like `>`, `<`, `>=`, `<=`, and `=` for numeric columns (e.g., `> 100`).
+- **Pagination:** Navigate through large datasets with easy-to-use pagination controls, including options to change the number of items shown per page.
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+## Getting Started
 
-## Code scaffolding
+Follow these instructions to get the project up and running on your local machine.
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+### Prerequisites
 
-```bash
-ng generate component component-name
-```
+You need to have [Node.js](https://nodejs.org/) and the [Angular CLI](https://angular.io/cli) installed.
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+### Installation
 
-```bash
-ng generate --help
-```
+1.  **Clone the repository:**
 
-## Building
+    ```bash
+    git clone <your-repository-url>
+    ```
 
-To build the project run:
+2.  **Navigate to the project directory:**
 
-```bash
-ng build
-```
+    ```bash
+    cd <project-directory>
+    ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+3.  **Install NPM packages:**
 
-## Running unit tests
+    ```bash
+    npm install
+    ```
 
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
+4.  **Run the development server:**
+    ```bash
+    ng serve
+    ```
+    Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
 
-```bash
-ng test
-```
+## Usage
 
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+1.  Open the application in your web browser.
+2.  Drag and drop a CSV or Parquet file onto the designated "Drop Zone".
+3.  The data will be loaded and displayed in the table.
+4.  Use the column headers to sort, the input fields to filter, and the controls at the bottom to navigate through the pages.
