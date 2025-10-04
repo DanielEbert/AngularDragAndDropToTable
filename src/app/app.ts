@@ -12,6 +12,8 @@ import { parquetReadObjects } from 'hyparquet';
 })
 export class App {
     isDragging = false;
+    isDropZoneVisible = true;
+    csvInput = '';
 
     headers: string[] = [];
     originalRows: any[][] = [];
@@ -61,7 +63,9 @@ export class App {
     readFileAsText(file: File): void {
         const reader = new FileReader();
         reader.onload = (e: ProgressEvent<FileReader>) => {
-            this.processCsvData(e.target?.result as string);
+            const csvContent = e.target?.result as string;
+            this.csvInput = csvContent;
+            this.processCsvData(csvContent);
         };
         reader.readAsText(file);
     }
@@ -71,6 +75,7 @@ export class App {
             const buffer = await file.arrayBuffer();
             const rows = await parquetReadObjects({ file: buffer });
             const csv = this.convertToCSV(rows);
+            this.csvInput = csv;
             this.processCsvData(csv);
         } catch (e) {
             console.error('Error reading parquet file:', e);
@@ -224,5 +229,9 @@ export class App {
         this.itemsPerPage = value === 0 ? Number.MAX_SAFE_INTEGER : value;
         this.currentPage = 1;
         this.updatePaginatedRows();
+    }
+
+    toggleDropZone(): void {
+        this.isDropZoneVisible = !this.isDropZoneVisible;
     }
 }

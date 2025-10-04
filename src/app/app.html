@@ -1,9 +1,4 @@
-<div class="drop-zone" (dragover)="onDragOver($event)" (drop)="onDrop($event)" (dragenter)="onDragEnter($event)"
-  (dragleave)="onDragLeave($event)" [class.drag-over]="isDragging">
-  Drop CSV or Parquet file here
-</div>
-
-<div *ngIf="headers.length > 0" class="table-container">
+<div *ngIf="headers.length > 0" class="table-container" [class.full-height]="!isDropZoneVisible">
   <table>
     <thead>
       <tr>
@@ -30,7 +25,14 @@
       </tr>
     </tbody>
   </table>
+</div>
 
+<div *ngIf="headers.length > 0" class="bottom-controls">
+  <div class="input-controls">
+    <button (click)="toggleDropZone()">
+      {{ isDropZoneVisible ? 'Hide Input' : 'Show Input' }}
+    </button>
+  </div>
   <div *ngIf="filteredRows.length > 0" class="pagination-controls">
     <select (change)="onItemsPerPageChange($event)">
       <option value="10" selected>10 per page</option>
@@ -46,4 +48,17 @@
     <button (click)="nextPage()" [disabled]="currentPage >= getTotalPages()">Next</button>
     <button (click)="goToLastPage()" [disabled]="currentPage >= getTotalPages()">Last</button>
   </div>
+</div>
+
+<div class="input-container">
+  <textarea *ngIf="isDropZoneVisible" class="drop-zone"
+    (dragover)="onDragOver($event)"
+    (drop)="onDrop($event)"
+    (dragenter)="onDragEnter($event)"
+    (dragleave)="onDragLeave($event)"
+    (change)="processCsvData(csvInput)"
+    [(ngModel)]="csvInput"
+    [class.drag-over]="isDragging"
+    placeholder="Drop CSV or Parquet file here, or paste CSV content and click outside the box to process.">
+  </textarea>
 </div>

@@ -1,18 +1,43 @@
 :host {
   display: block;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-  padding: 40px;
+  padding: 10px;
   background-color: #f7fafc;
 }
 
-.drop-zone {
+.input-container {
+  margin-top: 10px;
+
+  .input-controls {
+    display: flex;
+  }
+}
+
+.input-controls button {
+  padding: 8px 12px;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  background-color: #ffffff;
+  cursor: pointer;
+  transition: background-color 0.2s;
+
+  &:hover {
+    background-color: #edf2f7;
+  }
+}
+
+textarea.drop-zone {
   border: 2px dashed #e2e8f0;
   border-radius: 8px;
-  padding: 40px;
-  text-align: center;
+  padding: 20px;
+  text-align: left;
   color: #718096;
   transition: all 0.2s ease-in-out;
-  margin-bottom: 20px;
+  width: 100%;
+  min-height: 150px;
+  box-sizing: border-box;
+  resize: vertical;
+  font-family: monospace;
 
   &.drag-over {
     background-color: #ebf8ff;
@@ -25,7 +50,13 @@
   border-radius: 8px;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
   padding: 10px;
-  overflow-x: auto;
+  overflow: auto;
+  max-height: 60vh;
+  transition: max-height 0.3s ease-in-out;
+
+  &.full-height {
+    max-height: 85vh;
+  }
 }
 
 table {
@@ -99,11 +130,16 @@ tbody td {
   }
 }
 
-.pagination-controls {
+.bottom-controls {
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
   align-items: center;
   margin-top: 20px;
+}
+
+.pagination-controls {
+  display: flex;
+  align-items: center;
   gap: 8px;
 
   select,
