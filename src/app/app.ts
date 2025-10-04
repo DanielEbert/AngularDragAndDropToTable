@@ -3,6 +3,15 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { parquetReadObjects } from 'hyparquet';
 
+interface ColumnStats {
+    min: number;
+    max: number;
+    avg: number;
+    count: number;
+    nulls: number;
+    isNumeric: boolean;
+}
+
 @Component({
     selector: 'app-root',
     standalone: true,
@@ -23,6 +32,11 @@ export class App {
     sortDirection: 'asc' | 'desc' | null = null;
 
     filterTexts: string[] = [];
+    columnVisibility: boolean[] = [];
+
+    // Properties for Column Statistics
+    statsVisibleColumnIndex: number | null = null;
+    columnStats: (ColumnStats | null)[] = [];
 
     paginatedRows: any[][] = [];
     currentPage = 1;
@@ -106,6 +120,8 @@ export class App {
             line.split(',').map((cell) => cell.replace(/^"|"$/g, ''))
         );
         this.filterTexts = new Array(this.headers.length).fill('');
+        this.columnVisibility = new Array(this.headers.length).fill(true);
+        this.calculateColumnStats();
         this.applyFiltersAndSort();
     }
 
@@ -233,5 +249,47 @@ export class App {
 
     toggleDropZone(): void {
         this.isDropZoneVisible = !this.isDropZoneVisible;
+    }
+
+    clearAllFilters(): void {
+        this.filterTexts = new Array(this.headers.length).fill('');
+        this.applyFiltersAndSort();
+    }
+
+    toggleStatsPanel(columnIndex: number): void {
+        if (this.statsVisibleColumnIndex === columnIndex) {
+            this.statsVisibleColumnIndex = null;
+        } else {
+            this.statsVisibleColumnIndex = columnIndex;
+        }
+    }
+
+    calculateColumnStats(): void {
+        this.columnStats = this.headers.map((_, colIndex) => {
+            const values = this.originalRows.map(row => row[colIndex]);
+            const numericValues = values
+                .map(v => (v === null || v.trim() === '' ? null : Number(v)))
+                .filter(v => v !== null && !isNaN(v)) as number[];
+
+            const nulls = values.length - numericValues.length;
+
+            // Consider a column numeric if more than half of its non-empty values are numbers.
+            const isNumeric = numericValues.length > (values.length - nulls) / 2;
+
+            if (!isNumeric || numericValues.length === 0) {
+                return null;
+            }
+
+            const count = numericValues.length;
+            const sum = numericValues.reduce((acc, val) => acc + val, 0);
+            return {
+                min: Math.min(...numericValues),
+                max: Math.max(...numericValues),
+                avg: sum / count,
+                count: count,
+                nulls: nulls,
+                isNumeric: true,
+            };
+        });
     }
 }

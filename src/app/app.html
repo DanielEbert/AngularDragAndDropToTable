@@ -2,23 +2,39 @@
   <table>
     <thead>
       <tr>
-        <th *ngFor="let header of headers; let i = index" (click)="sortData(i)">
-          {{ header }}
-          <span *ngIf="sortColumnIndex === i && sortDirection">
-            {{ sortDirection === 'asc' ? '▲' : '▼' }}
-          </span>
+        <th *ngFor="let header of headers; let i = index" [style.display]="columnVisibility[i] ? '' : 'none'">
+          <div class="header-content">
+            <span (click)="sortData(i)">
+              {{ header }}
+              <ng-container *ngIf="sortColumnIndex === i && sortDirection">
+                {{ sortDirection === 'asc' ? '▲' : '▼' }}
+              </ng-container>
+            </span>
+            <button class="stats-button" *ngIf="columnStats[i]?.isNumeric" (click)="toggleStatsPanel(i)">📊</button>
+          </div>
         </th>
       </tr>
       <tr class="filter-row">
-        <th *ngFor="let header of headers; let i = index">
+        <th *ngFor="let header of headers; let i = index" [style.display]="columnVisibility[i] ? '' : 'none'">
           <input type="text" [(ngModel)]="filterTexts[i]" (ngModelChange)="applyFiltersAndSort()"
             placeholder="Filter...">
         </th>
       </tr>
+      <tr *ngIf="statsVisibleColumnIndex !== null" class="stats-row">
+          <th *ngFor="let header of headers; let i = index" [style.display]="columnVisibility[i] ? '' : 'none'">
+            <div *ngIf="statsVisibleColumnIndex === i && columnStats[i] as stats" class="stats-panel">
+              <div><span class="stat-label">Count:</span> <span class="stat-value">{{ stats.count }}</span></div>
+              <div><span class="stat-label">Min:</span> <span class="stat-value">{{ stats.min.toFixed(2) }}</span></div>
+              <div><span class="stat-label">Max:</span> <span class="stat-value">{{ stats.max.toFixed(2) }}</span></div>
+              <div><span class="stat-label">Avg:</span> <span class="stat-value">{{ stats.avg.toFixed(2) }}</span></div>
+              <div><span class="stat-label">Nulls:</span> <span class="stat-value">{{ stats.nulls }}</span></div>
+            </div>
+          </th>
+      </tr>
     </thead>
     <tbody>
       <tr *ngFor="let row of paginatedRows">
-        <td *ngFor="let cell of row">{{ cell }}</td>
+        <td *ngFor="let cell of row; let i = index" [style.display]="columnVisibility[i] ? '' : 'none'">{{ cell }}</td>
       </tr>
       <tr *ngIf="paginatedRows.length === 0 && hasAnyFilter()">
         <td [attr.colspan]="headers.length" class="no-results">No matching records found.</td>
@@ -32,8 +48,17 @@
     <button (click)="toggleDropZone()">
       {{ isDropZoneVisible ? 'Hide Input' : 'Show Input' }}
     </button>
+    <div *ngIf="headers.length > 0" class="column-visibility-controls" style="margin-left: 16px;">
+      <label *ngFor="let header of headers; let i = index">
+        <input type="checkbox" [(ngModel)]="columnVisibility[i]">
+        {{ header }}
+      </label>
+    </div>
   </div>
+
   <div *ngIf="filteredRows.length > 0" class="pagination-controls">
+    <button (click)="clearAllFilters()" *ngIf="hasAnyFilter()">Clear All Filters</button>
+
     <select (change)="onItemsPerPageChange($event)">
       <option value="10" selected>10 per page</option>
       <option value="20">20 per page</option>
